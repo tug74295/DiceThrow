@@ -12,8 +12,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val button = findViewById<Button>(R.id.rollDiceButton).setOnClickListener {
-
+        findViewById<Button>(R.id.rollDiceButton).setOnClickListener {
+            (supportFragmentManager
+                .findFragmentById(R.id.fragmentContainerView) as DieFragment).throwDie()
         }
     }
 }
