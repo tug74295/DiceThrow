@@ -11,6 +11,8 @@ import kotlin.random.Random
 class DieFragment : Fragment() {
 
     val DIESIDE = "sidenumber"
+    val PREVIOUS_ROLL = "previousRoll"
+    var currentRoll = 0
 
     lateinit var dieTextView: TextView
 
@@ -37,13 +39,30 @@ class DieFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        throwDie()
+        savedInstanceState?.run {
+            currentRoll = getInt(PREVIOUS_ROLL, 0)
+        }
+        if (currentRoll == 0) {
+            throwDie()
+        } else {
+            throwDie(currentRoll)
+        }
         view.setOnClickListener{
             throwDie()
         }
     }
 
     fun throwDie() {
-        dieTextView.text = (Random.nextInt(dieSides) + 1).toString()
+        currentRoll = (Random.nextInt(dieSides) + 1)
+        dieTextView.text = currentRoll.toString()
+    }
+
+    fun throwDie(die: Int) {
+        dieTextView.text = die.toString()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(PREVIOUS_ROLL, currentRoll)
     }
 }
