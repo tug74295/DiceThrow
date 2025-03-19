@@ -10,8 +10,17 @@ import kotlin.random.Random
 
 class DieFragment : Fragment() {
 
-    val DIESIDE = "sidenumber"
-    val PREVIOUS_ROLL = "previousRoll"
+    companion object {
+        val DIESIDE = "sidenumber"
+        val PREVIOUS_ROLL = "previousRoll"
+        fun newInstance(sides: Int): DieFragment {
+            val fragment = DieFragment()
+            val bundle = Bundle()
+            bundle.putInt(DIESIDE, sides)
+            fragment.arguments = bundle
+            return fragment
+        }
+    }
     var currentRoll = 0
 
     lateinit var dieTextView: TextView
