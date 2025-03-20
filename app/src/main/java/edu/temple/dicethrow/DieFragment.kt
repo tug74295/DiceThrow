@@ -6,13 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import kotlin.random.Random
 
 class DieFragment : Fragment() {
 
     companion object {
         val DIESIDE = "sidenumber"
-        val PREVIOUS_ROLL = "previousRoll"
         fun newInstance(sides: Int): DieFragment {
             val fragment = DieFragment()
             val bundle = Bundle()
@@ -21,11 +21,9 @@ class DieFragment : Fragment() {
             return fragment
         }
     }
-    var currentRoll = 0
-
     lateinit var dieTextView: TextView
-
     var dieSides: Int = 6
+    lateinit var dieViewModel: DieViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +32,7 @@ class DieFragment : Fragment() {
                 dieSides = this
             }
         }
+        dieViewModel = ViewModelProvider(requireActivity())[DieViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -48,30 +47,12 @@ class DieFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        savedInstanceState?.run {
-            currentRoll = getInt(PREVIOUS_ROLL, 0)
+        dieViewModel.getCurrentRoll().observe(viewLifecycleOwner) {
+            dieTextView.text = it.toString()
         }
-        if (currentRoll == 0) {
-            throwDie()
-        } else {
-            throwDie(currentRoll)
-        }
-        view.setOnClickListener{
-            throwDie()
+        if (dieViewModel.getCurrentRoll().value == null) {
+            dieViewModel.rollDie()
         }
     }
 
-    fun throwDie() {
-        currentRoll = (Random.nextInt(dieSides) + 1)
-        dieTextView.text = currentRoll.toString()
-    }
-
-    fun throwDie(die: Int) {
-        dieTextView.text = die.toString()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(PREVIOUS_ROLL, currentRoll)
-    }
 }
