@@ -11,7 +11,7 @@ class DieViewModel : ViewModel() {
     fun getCurrentRoll(): LiveData<Int> {
         return currentRoll
     }
-    fun setCurrentROll(roll: Int) {
+    fun setCurrentRoll(roll: Int) {
         currentRoll.value = roll
     }
 }
